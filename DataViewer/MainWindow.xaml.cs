@@ -65,21 +65,28 @@ namespace DataViewer
                 {
                     Directory.CreateDirectory(dirwork);
                 }
+                else
+                {
+                    System.Windows.Application.Current.Shutdown();
+                }
             }
         }
 
         private void Window_Closed(object sender, EventArgs e)
         {
-            string[] files = Directory.GetFiles(dirwork, "*", SearchOption.AllDirectories);
-            foreach (var file in files)
+            if (Directory.Exists(dirwork))
             {
-                try
+                string[] files = Directory.GetFiles(dirwork, "*", SearchOption.AllDirectories);
+                foreach (var file in files)
                 {
-                    File.Delete(file);
-                }
-                catch
-                {
+                    try
+                    {
+                        File.Delete(file);
+                    }
+                    catch
+                    {
 
+                    }
                 }
             }
         }

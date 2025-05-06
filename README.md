@@ -82,7 +82,9 @@
 
 ### データの読み込み
 
-1. DataViewerを起動します
+1. DataViewerを起動します。
+
+※初めて起動する場合は「`作業フォルダ「C:\DataViewerWorkSpace」を作成してもよろしいですか？`」と表示されます。「はい」をクリックすると、ソフトが使用可能になります。
 
 ![](img/dataviewer1.png)
 
