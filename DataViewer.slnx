@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="DataViewer/DataViewer.csproj" />
+  <Project Path="DataViewerSetup/DataViewerSetup.vdproj" Type="Installer">
+    <Build />
+  </Project>
+  <Project Path="MyMath/MyMath.fsproj" />
+</Solution>
