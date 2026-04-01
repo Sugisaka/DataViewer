@@ -21,13 +21,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_8278FBE5E0564FC38FE6F1AD9E1F7734"
+        "MsmKey" = "8:_8F4A42EA25F34DE9BBD22347B1784AF4"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_ED6273C675C94C8E8E4FB83265528E17"
+        "MsmKey" = "8:_942DF671B32547E9A59D19E885860AE0"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -49,6 +49,14 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+            }
         }
         "Release"
         {
@@ -65,6 +73,14 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+            }
         }
     }
     "Deployable"
@@ -293,7 +309,7 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_2D8E2889C258499988E9D28FAC1A8C70"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_756B7378CD664972A55B2AFF7F33C5C7"
             {
             "Name" = "8:DataViewer"
             "Arguments" = "8:"
@@ -301,24 +317,24 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_ED6273C675C94C8E8E4FB83265528E17"
-            "Folder" = "8:_972D2F870D9E43DE844C99920FAAFCBD"
-            "WorkingFolder" = "8:_4939ADD8217542FF9A4699669E55BF34"
-            "Icon" = "8:_42CAB80941594DFEBED38D75A4BFEB90"
-            "Feature" = "8:"
-            }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_2E74CA029839410897C9328776F8A8B1"
-            {
-            "Name" = "8:DataViewer"
-            "Arguments" = "8:"
-            "Description" = "8:"
-            "ShowCmd" = "3:1"
-            "IconIndex" = "3:0"
-            "Transitive" = "11:FALSE"
-            "Target" = "8:_ED6273C675C94C8E8E4FB83265528E17"
+            "Target" = "8:_8F4A42EA25F34DE9BBD22347B1784AF4"
             "Folder" = "8:_84EE944820D04B398B7BC2C6D1A24155"
             "WorkingFolder" = "8:_4939ADD8217542FF9A4699669E55BF34"
-            "Icon" = "8:_42CAB80941594DFEBED38D75A4BFEB90"
+            "Icon" = "8:"
+            "Feature" = "8:"
+            }
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_7B53148815A84BC0B6DC2381228E54A7"
+            {
+            "Name" = "8:DataViewer"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_8F4A42EA25F34DE9BBD22347B1784AF4"
+            "Folder" = "8:_972D2F870D9E43DE844C99920FAAFCBD"
+            "WorkingFolder" = "8:_4939ADD8217542FF9A4699669E55BF34"
+            "Icon" = "8:"
             "Feature" = "8:"
             }
         }
@@ -720,35 +736,7 @@
         }
         "ProjectOutput"
         {
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_8278FBE5E0564FC38FE6F1AD9E1F7734"
-            {
-            "SourcePath" = "8:..\\MyMath\\obj\\Release\\net10.0\\MyMath.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_4939ADD8217542FF9A4699669E55BF34"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            "ProjectOutputGroupRegister" = "3:1"
-            "OutputConfiguration" = "8:"
-            "OutputGroupCanonicalName" = "8:Built"
-            "OutputProjectGuid" = "8:{3D56BD80-CC98-4327-9D5A-7FAB79E2C73B}"
-            "ShowKeyOutput" = "11:TRUE"
-                "ExcludeFilters"
-                {
-                }
-            }
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_ED6273C675C94C8E8E4FB83265528E17"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_8F4A42EA25F34DE9BBD22347B1784AF4"
             {
             "SourcePath" = "8:..\\DataViewer\\obj\\Release\\net10.0-windows\\apphost.exe"
             "TargetName" = "8:"
@@ -770,7 +758,35 @@
             "ProjectOutputGroupRegister" = "3:1"
             "OutputConfiguration" = "8:"
             "OutputGroupCanonicalName" = "8:PublishItems"
-            "OutputProjectGuid" = "8:{73D25A63-2D6A-475A-9327-61561D56150C}"
+            "OutputProjectGuid" = "8:{97076391-55C9-D4EF-551C-229BF795B26B}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_942DF671B32547E9A59D19E885860AE0"
+            {
+            "SourcePath" = "8:..\\DataViewer\\obj\\Release\\net10.0-windows\\DataViewer.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_4939ADD8217542FF9A4699669E55BF34"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{97076391-55C9-D4EF-551C-229BF795B26B}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
                 {

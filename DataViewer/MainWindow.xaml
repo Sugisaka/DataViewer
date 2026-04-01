@@ -555,7 +555,7 @@
                         </Grid>
 
                         <!-- 本体 -->
-                        <ListView Name="listView1" ItemsSource="{Binding DV}">
+                        <ListView Name="listView1" ItemsSource="{Binding DV}" SelectionChanged="listView1_SelectionChanged">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <Grid Margin="0">
@@ -654,7 +654,7 @@
                 HorizontalAlignment="Stretch" 
                 VerticalAlignment="Bottom">
                 <StatusBarItem>
-
+                    <TextBlock x:Name="StatusText" Text="" />
                 </StatusBarItem>
             </StatusBar>
         </Grid>

@@ -116,7 +116,7 @@ namespace DataViewer
             }
             else
             {
-                DataView.LoadFiles(vm1.DV, filenames, plt, slider1, t_mag, PreviewGrid, image1, t_Nx, t_Ny, t_zmin, t_zmax, lb_zmin, lb_zmax, cb_colmap, dirwork, AnimationStop);
+                DataView.LoadFiles(vm1.DV, filenames, plt, slider1, t_mag, PreviewGrid, image1, t_Nx, t_Ny, t_zmin, t_zmax, lb_zmin, lb_zmax, cb_colmap, StatusText, dirwork, AnimationStop);
             }
         }
 
@@ -358,6 +358,18 @@ namespace DataViewer
             {
                 CompositionTarget.Rendering -= OnRendering;
                 isAnimationEnabled = false;
+            }
+        }
+
+        private void listView1_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var selected = listView1?.SelectedItem as DataView;
+            if (selected != null)
+            {
+                if (File.Exists(selected.FileDir + "\\" + selected.FileName))
+                {
+                    StatusText.Text = "Selected: " + selected.FileDir + "\\" + selected.FileName;
+                }
             }
         }
     }

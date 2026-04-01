@@ -52,9 +52,9 @@ namespace MyMath
             
             ("LandScapeBlue", [(0.0, 255,255,255); (50.0, 0,255,255); (100.0, 0,0,255)]);
             
-            ("ComplexLightRainbowCycle", [(0.0, 255,0,0); (1.0*100.0/6.0, 255,0,255); (2.0*100.0/6.0, 0,0,255); (3.0*100.0/6.0, 0,255,255); (4.0*100.0/6.0, 0,255,0); (5.0*100.0/6.0, 255,255,0); (100.0, 255,0,0)]);
+            ("ComplexLight", [(0.0, 255,0,0); (1.0*100.0/6.0, 255,0,255); (2.0*100.0/6.0, 0,0,255); (3.0*100.0/6.0, 0,255,255); (4.0*100.0/6.0, 0,255,0); (5.0*100.0/6.0, 255,255,0); (100.0, 255,0,0)]);
             
-            ("ComplexVividRainbowCycle", [(0.0, 255,0,0); (1.0*100.0/6.0, 255,0,255); (2.0*100.0/6.0, 0,0,255); (3.0*100.0/6.0, 0,255,255); (4.0*100.0/6.0, 0,255,0); (5.0*100.0/6.0, 255,255,0); (100.0, 255,0,0)]); |]
+            ("ComplexVivid", [(0.0, 255,0,0); (1.0*100.0/6.0, 255,0,255); (2.0*100.0/6.0, 0,0,255); (3.0*100.0/6.0, 0,255,255); (4.0*100.0/6.0, 0,255,0); (5.0*100.0/6.0, 255,255,0); (100.0, 255,0,0)]); |]
             
         /// <summary>
         /// 指定したカラーマップの位置に対する色情報を計算
@@ -89,13 +89,13 @@ namespace MyMath
                 |2,_ -> amp
                 |3,_ -> pha
                 |4,_ -> amp*amp
-                |5,("ComplexLightRainbowCycle"|"ComplexVividRainbowCycle") -> pha
+                |5,("ComplexLight"|"ComplexVivid") -> pha
                 |5,_ -> re*re+im*im
                 |_,_ -> re
             /// 色に変換する値を0～100に正規化
             let t = 
                 match tp,gname with
-                |3,_ |5,("ComplexLightRainbowCycle"|"ComplexVividRainbowCycle") ->
+                |3,_ |5,("ComplexLight"|"ComplexVivid") ->
                     match p0 with
                     | _ when p0 <= -1.0*Math.PI ->
                         0.0
@@ -674,7 +674,7 @@ namespace MyMath
                     this.error <- "data is not loaded"
             else
                 let (nx,ny) = 
-                    if gradation = "ComplexLightRainbowCycle" || gradation = "ComplexVividRainbowCycle" then
+                    if gradation = "ComplexLight" || gradation = "ComplexVivid" then
                         256,256
                     else
                         24,256
@@ -787,7 +787,7 @@ namespace MyMath
                     |Some i -> i
                     
                 match gradation with
-                |"ComplexLightRainbowCycle" | "ComplexVividRainbowCycle" ->
+                |"ComplexLight" | "ComplexVivid" ->
                     for  j = 0 to ny-1 do
                         for i = 0 to nx-1 do
                             let a = rangemin + (rangemax-rangemin)*(double j)/double (ny-1)

@@ -1,16 +1,18 @@
-﻿using System;
+﻿using MyMath;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using MyMath;
 
 namespace DataViewer
 {
@@ -48,7 +50,7 @@ namespace DataViewer
         private string _ColRe = "";
         private string _ColIm = "";
 
-        public DataView(string dir, string filename, plot2d plt, Slider slider1, TextBox t_mag, Grid PreviewGrid, System.Windows.Controls.Image image1, TextBox t_Nx, TextBox t_Ny, TextBox t_zmin, TextBox t_zmax, Label lb_zmin, Label lb_zmax, CheckBox cb_colmap, string dirwork, Action AnimationStop)
+        public DataView(string dir, string filename, plot2d plt, Slider slider1, TextBox t_mag, Grid PreviewGrid, System.Windows.Controls.Image image1, TextBox t_Nx, TextBox t_Ny, TextBox t_zmin, TextBox t_zmax, Label lb_zmin, Label lb_zmax, CheckBox cb_colmap, TextBlock status, string dirwork, Action AnimationStop)
         {
             FileDir = dir;
             FileName = filename;
@@ -61,8 +63,8 @@ namespace DataViewer
             ColY = "2";
             ColRe = "3";
             ColIm = "-";
-            Preview = new RelayCommand(_ => OnButtonPreviewClicked(plt, slider1, t_mag, PreviewGrid, image1, t_Nx, t_Ny, t_zmin, t_zmax, lb_zmin, lb_zmax, dirwork, AnimationStop));
-            Plot = new RelayCommand(_ => OnButtonPlotClicked(plt, slider1, t_mag, PreviewGrid, image1, t_Nx, t_Ny, t_zmin, t_zmax, lb_zmin, lb_zmax, cb_colmap, dirwork, AnimationStop));
+            Preview = new RelayCommand(_ => OnButtonPreviewClicked(plt, slider1, t_mag, PreviewGrid, image1, t_Nx, t_Ny, t_zmin, t_zmax, lb_zmin, lb_zmax, status, dirwork, AnimationStop));
+            Plot = new RelayCommand(_ => OnButtonPlotClicked(plt, slider1, t_mag, PreviewGrid, image1, t_Nx, t_Ny, t_zmin, t_zmax, lb_zmin, lb_zmax, cb_colmap, status, dirwork, AnimationStop));
         }
 
         public string FileDir
@@ -227,15 +229,17 @@ namespace DataViewer
         public ICommand Preview { get; }
         public ICommand Plot { get; }
 
-        private void OnButtonPreviewClicked(plot2d plt, Slider slider1, TextBox t_mag, Grid PreviewGrid, System.Windows.Controls.Image image1, TextBox t_Nx, TextBox t_Ny, TextBox t_zmin, TextBox t_zmax, Label lb_zmin, Label lb_zmax, string dirwork, Action AnimationStop)
+        private void OnButtonPreviewClicked(plot2d plt, Slider slider1, TextBox t_mag, Grid PreviewGrid, System.Windows.Controls.Image image1, TextBox t_Nx, TextBox t_Ny, TextBox t_zmin, TextBox t_zmax, Label lb_zmin, Label lb_zmax, TextBlock StatusText, string dirwork, Action AnimationStop)
         {
             FileLoad(dirwork, "", 0.0, this, plt, slider1, t_mag, PreviewGrid, image1, t_Nx, t_Ny, t_zmin, t_zmax, lb_zmin, lb_zmax, AnimationStop);
             preview(dirwork, "", 0.0, this, plt, slider1, t_mag, PreviewGrid, image1, t_Nx, t_Ny, t_zmin, t_zmax, lb_zmin, lb_zmax, AnimationStop);
+            StatusText.Text = "Preview:  " + FileDir + "\\" + FileName;
         }
 
-        private void OnButtonPlotClicked(plot2d plt, Slider slider1, TextBox t_mag, Grid PreviewGrid, System.Windows.Controls.Image image1, TextBox t_Nx, TextBox t_Ny, TextBox t_zmin, TextBox t_zmax, Label lb_zmin, Label lb_zmax, CheckBox cb_colmap, string dirwork, Action AnimationStop)
+        private void OnButtonPlotClicked(plot2d plt, Slider slider1, TextBox t_mag, Grid PreviewGrid, System.Windows.Controls.Image image1, TextBox t_Nx, TextBox t_Ny, TextBox t_zmin, TextBox t_zmax, Label lb_zmin, Label lb_zmax, CheckBox cb_colmap, TextBlock StatusText, string dirwork, Action AnimationStop)
         {
             plot(this, plt, slider1, t_mag, PreviewGrid, image1, t_Nx, t_Ny, t_zmin, t_zmax, lb_zmin, lb_zmax, cb_colmap, dirwork, AnimationStop);
+            StatusText.Text = "PLot:  " + FileDir + "\\" + FileName;
         }
 
         /// <summary>
@@ -259,7 +263,7 @@ namespace DataViewer
         /// </summary>
         /// <param name="DV"></param>
         /// <param name="filenames"></param>
-        public static void LoadFiles(ObservableCollection<DataView> DV, string[] filenames, plot2d plt, Slider slider1, TextBox t_mag, Grid PreviewGrid, System.Windows.Controls.Image image1, TextBox t_Nx, TextBox t_Ny, TextBox t_zmin, TextBox t_zmax, Label lb_zmin, Label lb_zmax, CheckBox cb_colmap, string dirwork, Action AnimationStop)
+        public static void LoadFiles(ObservableCollection<DataView> DV, string[] filenames, plot2d plt, Slider slider1, TextBox t_mag, Grid PreviewGrid, System.Windows.Controls.Image image1, TextBox t_Nx, TextBox t_Ny, TextBox t_zmin, TextBox t_zmax, Label lb_zmin, Label lb_zmax, CheckBox cb_colmap, TextBlock status, string dirwork, Action AnimationStop)
         {
             foreach (var filename in filenames)
             {
@@ -269,7 +273,7 @@ namespace DataViewer
                     if (dir != null)
                     {
                         var name = Path.GetFileName(filename);
-                        DataView d = new DataView(dir, name, plt, slider1, t_mag, PreviewGrid, image1, t_Nx, t_Ny, t_zmin, t_zmax, lb_zmin, lb_zmax, cb_colmap, dirwork, AnimationStop);
+                        DataView d = new DataView(dir, name, plt, slider1, t_mag, PreviewGrid, image1, t_Nx, t_Ny, t_zmin, t_zmax, lb_zmin, lb_zmax, cb_colmap, status, dirwork, AnimationStop);
                         DV.Add(d);
                     }
                 }
