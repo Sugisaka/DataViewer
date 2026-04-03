@@ -56,6 +56,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
             }
         }
         "Release"
@@ -80,6 +88,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
             }
         }
     }
@@ -320,7 +336,7 @@
             "Target" = "8:_8F4A42EA25F34DE9BBD22347B1784AF4"
             "Folder" = "8:_84EE944820D04B398B7BC2C6D1A24155"
             "WorkingFolder" = "8:_4939ADD8217542FF9A4699669E55BF34"
-            "Icon" = "8:"
+            "Icon" = "8:_42CAB80941594DFEBED38D75A4BFEB90"
             "Feature" = "8:"
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_7B53148815A84BC0B6DC2381228E54A7"
@@ -334,7 +350,7 @@
             "Target" = "8:_8F4A42EA25F34DE9BBD22347B1784AF4"
             "Folder" = "8:_972D2F870D9E43DE844C99920FAAFCBD"
             "WorkingFolder" = "8:_4939ADD8217542FF9A4699669E55BF34"
-            "Icon" = "8:"
+            "Icon" = "8:_42CAB80941594DFEBED38D75A4BFEB90"
             "Feature" = "8:"
             }
         }
