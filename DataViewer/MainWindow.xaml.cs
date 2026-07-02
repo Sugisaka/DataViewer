@@ -33,6 +33,8 @@ namespace DataViewer
 
         plot2d plt = new plot2d();
 
+        private readonly PreviewControls previewControls;
+
         List<BitmapImage> animationBMP = new List<BitmapImage>(0);
 
         int animationNdiv = 20;
@@ -53,6 +55,19 @@ namespace DataViewer
         public MainWindow()
         {
             InitializeComponent();
+            previewControls = new PreviewControls
+            {
+                MagnificationSlider = slider1,
+                MagnificationTextBox = t_mag,
+                PreviewGrid = PreviewGrid,
+                PreviewImage = image1,
+                NxTextBox = t_Nx,
+                NyTextBox = t_Ny,
+                MinTextBox = t_zmin,
+                MaxTextBox = t_zmax,
+                MinLabel = lb_zmin,
+                MaxLabel = lb_zmax
+            };
             this.DataContext = vm1;
         }
 
@@ -116,7 +131,7 @@ namespace DataViewer
             }
             else
             {
-                DataView.LoadFiles(vm1.DV, filenames, plt, slider1, t_mag, PreviewGrid, image1, t_Nx, t_Ny, t_zmin, t_zmax, lb_zmin, lb_zmax, cb_colmap, StatusText, dirwork, AnimationStop);
+                DataView.LoadFiles(vm1.DV, filenames, plt, previewControls, cb_colmap, StatusText, dirwork, AnimationStop);
             }
         }
 
@@ -278,7 +293,7 @@ namespace DataViewer
         {
             foreach (var d in vm1.DV)
             {
-                DataView.plot(d, plt, slider1, t_mag, PreviewGrid, image1, t_Nx, t_Ny, t_zmin, t_zmax, lb_zmin, lb_zmax, cb_colmap, dirwork, AnimationStop);
+                DataView.plot(d, plt, previewControls, cb_colmap, dirwork, AnimationStop);
             }
         }
 
@@ -339,7 +354,7 @@ namespace DataViewer
             else
             {
                 animationBMP = new List<BitmapImage>(0);
-                if (DataView.animationPlot(dirwork, animationBMP, animationNdiv, selected, plt, slider1, t_mag, PreviewGrid, image1, t_Nx, t_Ny, t_zmin, t_zmax, lb_zmin, lb_zmax, AnimationStop))
+                if (DataView.animationPlot(dirwork, animationBMP, animationNdiv, selected, plt, previewControls, AnimationStop))
                 {
                     animationCounter = 0;
                     AnimationStart();

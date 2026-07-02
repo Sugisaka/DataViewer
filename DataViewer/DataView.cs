@@ -50,7 +50,7 @@ namespace DataViewer
         private string _ColRe = "";
         private string _ColIm = "";
 
-        public DataView(string dir, string filename, plot2d plt, Slider slider1, TextBox t_mag, Grid PreviewGrid, System.Windows.Controls.Image image1, TextBox t_Nx, TextBox t_Ny, TextBox t_zmin, TextBox t_zmax, Label lb_zmin, Label lb_zmax, CheckBox cb_colmap, TextBlock status, string dirwork, Action AnimationStop)
+        public DataView(string dir, string filename, plot2d plt, PreviewControls previewControls, CheckBox cb_colmap, TextBlock status, string dirwork, Action AnimationStop)
         {
             FileDir = dir;
             FileName = filename;
@@ -63,8 +63,8 @@ namespace DataViewer
             ColY = "2";
             ColRe = "3";
             ColIm = "-";
-            Preview = new RelayCommand(_ => OnButtonPreviewClicked(plt, slider1, t_mag, PreviewGrid, image1, t_Nx, t_Ny, t_zmin, t_zmax, lb_zmin, lb_zmax, status, dirwork, AnimationStop));
-            Plot = new RelayCommand(_ => OnButtonPlotClicked(plt, slider1, t_mag, PreviewGrid, image1, t_Nx, t_Ny, t_zmin, t_zmax, lb_zmin, lb_zmax, cb_colmap, status, dirwork, AnimationStop));
+            Preview = new RelayCommand(_ => OnButtonPreviewClicked(plt, previewControls, status, dirwork, AnimationStop));
+            Plot = new RelayCommand(_ => OnButtonPlotClicked(plt, previewControls, cb_colmap, status, dirwork, AnimationStop));
         }
 
         public string FileDir
@@ -229,16 +229,16 @@ namespace DataViewer
         public ICommand Preview { get; }
         public ICommand Plot { get; }
 
-        private void OnButtonPreviewClicked(plot2d plt, Slider slider1, TextBox t_mag, Grid PreviewGrid, System.Windows.Controls.Image image1, TextBox t_Nx, TextBox t_Ny, TextBox t_zmin, TextBox t_zmax, Label lb_zmin, Label lb_zmax, TextBlock StatusText, string dirwork, Action AnimationStop)
+        private void OnButtonPreviewClicked(plot2d plt, PreviewControls previewControls, TextBlock StatusText, string dirwork, Action AnimationStop)
         {
-            FileLoad(dirwork, "", 0.0, this, plt, slider1, t_mag, PreviewGrid, image1, t_Nx, t_Ny, t_zmin, t_zmax, lb_zmin, lb_zmax, AnimationStop);
-            preview(dirwork, "", 0.0, this, plt, slider1, t_mag, PreviewGrid, image1, t_Nx, t_Ny, t_zmin, t_zmax, lb_zmin, lb_zmax, AnimationStop);
+            FileLoad(dirwork, this, plt, previewControls, AnimationStop);
+            preview(dirwork, "", 0.0, this, plt, previewControls, AnimationStop);
             StatusText.Text = "Preview:  " + FileDir + "\\" + FileName;
         }
 
-        private void OnButtonPlotClicked(plot2d plt, Slider slider1, TextBox t_mag, Grid PreviewGrid, System.Windows.Controls.Image image1, TextBox t_Nx, TextBox t_Ny, TextBox t_zmin, TextBox t_zmax, Label lb_zmin, Label lb_zmax, CheckBox cb_colmap, TextBlock StatusText, string dirwork, Action AnimationStop)
+        private void OnButtonPlotClicked(plot2d plt, PreviewControls previewControls, CheckBox cb_colmap, TextBlock StatusText, string dirwork, Action AnimationStop)
         {
-            plot(this, plt, slider1, t_mag, PreviewGrid, image1, t_Nx, t_Ny, t_zmin, t_zmax, lb_zmin, lb_zmax, cb_colmap, dirwork, AnimationStop);
+            plot(this, plt, previewControls, cb_colmap, dirwork, AnimationStop);
             StatusText.Text = "PLot:  " + FileDir + "\\" + FileName;
         }
 
@@ -263,7 +263,7 @@ namespace DataViewer
         /// </summary>
         /// <param name="DV"></param>
         /// <param name="filenames"></param>
-        public static void LoadFiles(ObservableCollection<DataView> DV, string[] filenames, plot2d plt, Slider slider1, TextBox t_mag, Grid PreviewGrid, System.Windows.Controls.Image image1, TextBox t_Nx, TextBox t_Ny, TextBox t_zmin, TextBox t_zmax, Label lb_zmin, Label lb_zmax, CheckBox cb_colmap, TextBlock status, string dirwork, Action AnimationStop)
+        public static void LoadFiles(ObservableCollection<DataView> DV, string[] filenames, plot2d plt, PreviewControls previewControls, CheckBox cb_colmap, TextBlock status, string dirwork, Action AnimationStop)
         {
             foreach (var filename in filenames)
             {
@@ -273,7 +273,7 @@ namespace DataViewer
                     if (dir != null)
                     {
                         var name = Path.GetFileName(filename);
-                        DataView d = new DataView(dir, name, plt, slider1, t_mag, PreviewGrid, image1, t_Nx, t_Ny, t_zmin, t_zmax, lb_zmin, lb_zmax, cb_colmap, status, dirwork, AnimationStop);
+                        DataView d = new DataView(dir, name, plt, previewControls, cb_colmap, status, dirwork, AnimationStop);
                         DV.Add(d);
                     }
                 }
@@ -310,14 +310,14 @@ namespace DataViewer
             }
         }
 
-        private void FileLoad(string outputdir, string addfilename, double phaseshift, DataView d, plot2d plt, Slider slider1, TextBox t_mag, Grid PreviewGrid, System.Windows.Controls.Image image1, TextBox t_Nx, TextBox t_Ny, TextBox t_zmin, TextBox t_zmax, Label lb_zmin, Label lb_zmax, Action AnimationStop)
+        private void FileLoad(string outputdir, DataView d, plot2d plt, PreviewControls previewControls, Action AnimationStop)
         {
             if (d == null || !TryLoadData(d, plt))
             {
                 return;
             }
 
-            preview(outputdir, "", 0.0, d, plt, slider1, t_mag, PreviewGrid, image1, t_Nx, t_Ny, t_zmin, t_zmax, lb_zmin, lb_zmax, AnimationStop);
+            preview(outputdir, "", 0.0, d, plt, previewControls, AnimationStop);
         }
 
         static private string SetOutputFileName(string outputdir, string filename, string addfilename)
@@ -358,7 +358,7 @@ namespace DataViewer
         /// <param name="phaseshift"></param>
         /// <param name="d"></param>
         /// <returns></returns>
-        static private string preview(string outputdir, string addfilename, double phaseshift, DataView d, plot2d plt, Slider slider1, TextBox t_mag, Grid PreviewGrid, System.Windows.Controls.Image image1, TextBox t_Nx, TextBox t_Ny, TextBox t_zmin, TextBox t_zmax, Label lb_zmin, Label lb_zmax, Action AnimationStop)
+        static private string preview(string outputdir, string addfilename, double phaseshift, DataView d, plot2d plt, PreviewControls controls, Action AnimationStop)
         {
             AnimationStop();
             var file = SetOutputFileName(outputdir, d.FileName, addfilename);
@@ -380,61 +380,61 @@ namespace DataViewer
                 MessageBox.Show("画像ファイルの生成に失敗しました", "プロット失敗", MessageBoxButton.OK, MessageBoxImage.Error);
                 return "";
             }
-            var mag = slider1.Value;
-            t_mag.Text = ((int)mag).ToString();
-            PreviewGrid.Width = (int)Math.Floor(0.5 + (0.01 * mag) * bmp.PixelWidth);
-            PreviewGrid.Height = (int)Math.Floor(0.5 + (0.01 * mag) * bmp.PixelHeight);
-            image1.Width = (int)Math.Floor(0.5 + (0.01 * mag) * bmp.PixelWidth);
-            image1.Height = (int)Math.Floor(0.5 + (0.01 * mag) * bmp.PixelHeight);
-            image1.Source = bmp;
-            t_Nx.Text = plt.nx.ToString();
-            t_Ny.Text = plt.ny.ToString();
+            var mag = controls.MagnificationSlider.Value;
+            controls.MagnificationTextBox.Text = ((int)mag).ToString();
+            controls.PreviewGrid.Width = (int)Math.Floor(0.5 + (0.01 * mag) * bmp.PixelWidth);
+            controls.PreviewGrid.Height = (int)Math.Floor(0.5 + (0.01 * mag) * bmp.PixelHeight);
+            controls.PreviewImage.Width = (int)Math.Floor(0.5 + (0.01 * mag) * bmp.PixelWidth);
+            controls.PreviewImage.Height = (int)Math.Floor(0.5 + (0.01 * mag) * bmp.PixelHeight);
+            controls.PreviewImage.Source = bmp;
+            controls.NxTextBox.Text = plt.nx.ToString();
+            controls.NyTextBox.Text = plt.ny.ToString();
             if (d.PlotType == "Re")
             {
-                lb_zmin.Content = "min(Re) = ";
-                lb_zmax.Content = "max(Re) = ";
-                t_zmin.Text = plt.minRe.ToString("0.0#######e+00");
-                t_zmax.Text = plt.maxRe.ToString("0.0#######e+00");
+                controls.MinLabel.Content = "min(Re) = ";
+                controls.MaxLabel.Content = "max(Re) = ";
+                controls.MinTextBox.Text = plt.minRe.ToString("0.0#######e+00");
+                controls.MaxTextBox.Text = plt.maxRe.ToString("0.0#######e+00");
             }
             else if (d.PlotType == "Im")
             {
-                lb_zmin.Content = "min(Im) = ";
-                lb_zmax.Content = "max(Im) = ";
-                t_zmin.Text = plt.minIm.ToString("0.0#######e+00");
-                t_zmax.Text = plt.maxIm.ToString("0.0#######e+00");
+                controls.MinLabel.Content = "min(Im) = ";
+                controls.MaxLabel.Content = "max(Im) = ";
+                controls.MinTextBox.Text = plt.minIm.ToString("0.0#######e+00");
+                controls.MaxTextBox.Text = plt.maxIm.ToString("0.0#######e+00");
             }
             else if (d.PlotType == "Abs")
             {
-                lb_zmin.Content = "min(Abs) = ";
-                lb_zmax.Content = "max(Abs) = ";
-                t_zmin.Text = plt.minAbs.ToString("0.0#######e+00");
-                t_zmax.Text = plt.maxAbs.ToString("0.0#######e+00");
+                controls.MinLabel.Content = "min(Abs) = ";
+                controls.MaxLabel.Content = "max(Abs) = ";
+                controls.MinTextBox.Text = plt.minAbs.ToString("0.0#######e+00");
+                controls.MaxTextBox.Text = plt.maxAbs.ToString("0.0#######e+00");
             }
             else if (d.PlotType == "Pha")
             {
-                lb_zmin.Content = "min(Pha) = ";
-                lb_zmax.Content = "max(Pha) = ";
-                t_zmin.Text = plt.minPha.ToString("0.0#######e+00");
-                t_zmax.Text = plt.maxPha.ToString("0.0#######e+00");
+                controls.MinLabel.Content = "min(Pha) = ";
+                controls.MaxLabel.Content = "max(Pha) = ";
+                controls.MinTextBox.Text = plt.minPha.ToString("0.0#######e+00");
+                controls.MaxTextBox.Text = plt.maxPha.ToString("0.0#######e+00");
             }
             else if (d.PlotType == "Pow")
             {
-                lb_zmin.Content = "min(Pow) = ";
-                lb_zmax.Content = "max(Pow) = ";
-                t_zmin.Text = (plt.minAbs * plt.minAbs).ToString("0.0#######e+00");
-                t_zmax.Text = (plt.maxAbs * plt.maxAbs).ToString("0.0#######e+00");
+                controls.MinLabel.Content = "min(Pow) = ";
+                controls.MaxLabel.Content = "max(Pow) = ";
+                controls.MinTextBox.Text = (plt.minAbs * plt.minAbs).ToString("0.0#######e+00");
+                controls.MaxTextBox.Text = (plt.maxAbs * plt.maxAbs).ToString("0.0#######e+00");
             }
             else if (d.PlotType == "Cpx")
             {
-                lb_zmin.Content = "min(Abs) = ";
-                lb_zmax.Content = "max(Abs) = ";
-                t_zmin.Text = plt.minAbs.ToString("0.0#######e+00");
-                t_zmax.Text = plt.maxAbs.ToString("0.0#######e+00");
+                controls.MinLabel.Content = "min(Abs) = ";
+                controls.MaxLabel.Content = "max(Abs) = ";
+                controls.MinTextBox.Text = plt.minAbs.ToString("0.0#######e+00");
+                controls.MaxTextBox.Text = plt.maxAbs.ToString("0.0#######e+00");
             }
             return file;
         }
 
-        static public bool animationPlot(string outputdir, List<BitmapImage> bmp, int Ndiv, DataView d, plot2d plt, Slider slider1, TextBox t_mag, Grid PreviewGrid, System.Windows.Controls.Image image1, TextBox t_Nx, TextBox t_Ny, TextBox t_zmin, TextBox t_zmax, Label lb_zmin, Label lb_zmax, Action AnimationStop)
+        static public bool animationPlot(string outputdir, List<BitmapImage> bmp, int Ndiv, DataView d, plot2d plt, PreviewControls controls, Action AnimationStop)
         {
             AnimationStop();
             if (Ndiv <= 0 || !TryLoadData(d, plt))
@@ -469,56 +469,56 @@ namespace DataViewer
                 return false;
             }
 
-            var mag = slider1.Value;
-            t_mag.Text = ((int)mag).ToString();
-            PreviewGrid.Width = (int)Math.Floor(0.5 + (0.01 * mag) * bmp[0].PixelWidth);
-            PreviewGrid.Height = (int)Math.Floor(0.5 + (0.01 * mag) * bmp[0].PixelHeight);
-            image1.Width = (int)Math.Floor(0.5 + (0.01 * mag) * bmp[0].PixelWidth);
-            image1.Height = (int)Math.Floor(0.5 + (0.01 * mag) * bmp[0].PixelHeight);
+            var mag = controls.MagnificationSlider.Value;
+            controls.MagnificationTextBox.Text = ((int)mag).ToString();
+            controls.PreviewGrid.Width = (int)Math.Floor(0.5 + (0.01 * mag) * bmp[0].PixelWidth);
+            controls.PreviewGrid.Height = (int)Math.Floor(0.5 + (0.01 * mag) * bmp[0].PixelHeight);
+            controls.PreviewImage.Width = (int)Math.Floor(0.5 + (0.01 * mag) * bmp[0].PixelWidth);
+            controls.PreviewImage.Height = (int)Math.Floor(0.5 + (0.01 * mag) * bmp[0].PixelHeight);
             //image1.Source = bmp[0];
-            t_Nx.Text = plt.nx.ToString();
-            t_Ny.Text = plt.ny.ToString();
+            controls.NxTextBox.Text = plt.nx.ToString();
+            controls.NyTextBox.Text = plt.ny.ToString();
             if (d.PlotType == "Re")
             {
-                lb_zmin.Content = "min(Re) = ";
-                lb_zmax.Content = "max(Re) = ";
-                t_zmin.Text = plt.minRe.ToString("0.0#######e+00");
-                t_zmax.Text = plt.maxRe.ToString("0.0#######e+00");
+                controls.MinLabel.Content = "min(Re) = ";
+                controls.MaxLabel.Content = "max(Re) = ";
+                controls.MinTextBox.Text = plt.minRe.ToString("0.0#######e+00");
+                controls.MaxTextBox.Text = plt.maxRe.ToString("0.0#######e+00");
             }
             else if (d.PlotType == "Im")
             {
-                lb_zmin.Content = "min(Im) = ";
-                lb_zmax.Content = "max(Im) = ";
-                t_zmin.Text = plt.minIm.ToString("0.0#######e+00");
-                t_zmax.Text = plt.maxIm.ToString("0.0#######e+00");
+                controls.MinLabel.Content = "min(Im) = ";
+                controls.MaxLabel.Content = "max(Im) = ";
+                controls.MinTextBox.Text = plt.minIm.ToString("0.0#######e+00");
+                controls.MaxTextBox.Text = plt.maxIm.ToString("0.0#######e+00");
             }
             else if (d.PlotType == "Abs")
             {
-                lb_zmin.Content = "min(Abs) = ";
-                lb_zmax.Content = "max(Abs) = ";
-                t_zmin.Text = plt.minAbs.ToString("0.0#######e+00");
-                t_zmax.Text = plt.maxAbs.ToString("0.0#######e+00");
+                controls.MinLabel.Content = "min(Abs) = ";
+                controls.MaxLabel.Content = "max(Abs) = ";
+                controls.MinTextBox.Text = plt.minAbs.ToString("0.0#######e+00");
+                controls.MaxTextBox.Text = plt.maxAbs.ToString("0.0#######e+00");
             }
             else if (d.PlotType == "Pha")
             {
-                lb_zmin.Content = "min(Pha) = ";
-                lb_zmax.Content = "max(Pha) = ";
-                t_zmin.Text = plt.minPha.ToString("0.0#######e+00");
-                t_zmax.Text = plt.maxPha.ToString("0.0#######e+00");
+                controls.MinLabel.Content = "min(Pha) = ";
+                controls.MaxLabel.Content = "max(Pha) = ";
+                controls.MinTextBox.Text = plt.minPha.ToString("0.0#######e+00");
+                controls.MaxTextBox.Text = plt.maxPha.ToString("0.0#######e+00");
             }
             else if (d.PlotType == "Pow")
             {
-                lb_zmin.Content = "min(Pow) = ";
-                lb_zmax.Content = "max(Pow) = ";
-                t_zmin.Text = (plt.minAbs * plt.minAbs).ToString("0.0#######e+00");
-                t_zmax.Text = (plt.maxAbs * plt.maxAbs).ToString("0.0#######e+00");
+                controls.MinLabel.Content = "min(Pow) = ";
+                controls.MaxLabel.Content = "max(Pow) = ";
+                controls.MinTextBox.Text = (plt.minAbs * plt.minAbs).ToString("0.0#######e+00");
+                controls.MaxTextBox.Text = (plt.maxAbs * plt.maxAbs).ToString("0.0#######e+00");
             }
             else if (d.PlotType == "Cpx")
             {
-                lb_zmin.Content = "min(Abs) = ";
-                lb_zmax.Content = "max(Abs) = ";
-                t_zmin.Text = plt.minAbs.ToString("0.0#######e+00");
-                t_zmax.Text = plt.maxAbs.ToString("0.0#######e+00");
+                controls.MinLabel.Content = "min(Abs) = ";
+                controls.MaxLabel.Content = "max(Abs) = ";
+                controls.MinTextBox.Text = plt.minAbs.ToString("0.0#######e+00");
+                controls.MaxTextBox.Text = plt.maxAbs.ToString("0.0#######e+00");
             }
             return true;
         }
@@ -567,7 +567,7 @@ namespace DataViewer
             return true;
         }
 
-        static public void plot(DataView d, plot2d plt, Slider slider1, TextBox t_mag, Grid PreviewGrid, System.Windows.Controls.Image image1, TextBox t_Nx, TextBox t_Ny, TextBox t_zmin, TextBox t_zmax, Label lb_zmin, Label lb_zmax, CheckBox cb_colmap, string dirwork, Action AnimationStop)
+        static public void plot(DataView d, plot2d plt, PreviewControls previewControls, CheckBox cb_colmap, string dirwork, Action AnimationStop)
         {
             AnimationStop();
             if (!TryLoadData(d, plt))
@@ -575,7 +575,7 @@ namespace DataViewer
                 return;
             }
 
-            var file1 = preview(dirwork, "", 0.0, d, plt, slider1, t_mag, PreviewGrid, image1, t_Nx, t_zmin, t_zmax, t_Ny, lb_zmin, lb_zmax, AnimationStop);
+            var file1 = preview(dirwork, "", 0.0, d, plt, previewControls, AnimationStop);
             var file2 = SetOutputFileName(d.FileDir, d.FileName, "");
             if (file1 != "")
             {
