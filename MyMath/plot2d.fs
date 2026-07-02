@@ -262,6 +262,10 @@ namespace MyMath
                 let rec read n =
                     let tmp:string=reader.ReadLine()
                     match tmp with
+                    | null ->
+                        reader.Close()
+                        this.error <- "有効なデータがありません。空ファイル、またはコメント行のみの可能性があります。"
+                        [| ' ' |]
                     | _ when (tmp.Contains("#")) -> 
                         read (n+1)
                     | _ when (tmp.Contains("\t")) -> 
@@ -329,12 +333,14 @@ namespace MyMath
                 // read関数実行→sizeの返却値 *)
                 read 0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0
                 
-            if dx = 0.0 then this.error <- (if this.error = "" then "" else this.error+"\r\n") + "xの値が一定です。1次元データの可能性があります。"
-            if dy = 0.0 then this.error <- (if this.error = "" then "" else this.error+"\r\n") + "yの値が一定です。1次元データの可能性があります。"
+            if this.error = "" then
+                if dx = 0.0 then this.error <- "xの値が一定です。1次元データの可能性があります。"
+                if dy = 0.0 then this.error <- (if this.error = "" then "" else this.error+"\r\n") + "yの値が一定です。1次元データの可能性があります。"
             
             // 離散間隔とデータ範囲から離散点数を決定
-            this.nx <- int (Math.Floor((xmax - xmin) / dx + 0.5) + 1.0)
-            this.ny <- int (Math.Floor((ymax - ymin) / dy + 0.5) + 1.0)
+            if this.error = "" then
+                this.nx <- int (Math.Floor((xmax - xmin) / dx + 0.5) + 1.0)
+                this.ny <- int (Math.Floor((ymax - ymin) / dy + 0.5) + 1.0)
             
             if this.error="" then
                 // 配列初期化
