@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DataViewer"
         mc:Ignorable="d"
-        Title="DataViewer 17.0"
+        Title="DataViewer 17.1"
         Width="1200"
         Height="780"
         Loaded="Window_Loaded"

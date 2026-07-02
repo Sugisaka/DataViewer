@@ -239,7 +239,7 @@ namespace DataViewer
         private void OnButtonPlotClicked(plot2d plt, PreviewControls previewControls, CheckBox cb_colmap, TextBlock StatusText, string dirwork, Action AnimationStop)
         {
             plot(this, plt, previewControls, cb_colmap, dirwork, AnimationStop);
-            StatusText.Text = "PLot:  " + FileDir + "\\" + FileName;
+            StatusText.Text = "Plot:  " + FileDir + "\\" + FileName;
         }
 
         /// <summary>
