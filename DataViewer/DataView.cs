@@ -312,47 +312,12 @@ namespace DataViewer
 
         private void FileLoad(string outputdir, string addfilename, double phaseshift, DataView d, plot2d plt, Slider slider1, TextBox t_mag, Grid PreviewGrid, System.Windows.Controls.Image image1, TextBox t_Nx, TextBox t_Ny, TextBox t_zmin, TextBox t_zmax, Label lb_zmin, Label lb_zmax, Action AnimationStop)
         {
-            if (d != null)
-            {
-                if (!File.Exists(d.FileFullPath))
-                {
-                    MessageBox.Show("ファイル「" + d.FileFullPath + "」は存在しません", "プロット失敗", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
-                else
-                {
-                    if (d.FileFormat == "Binary")
-                    {
-                        plt.FileRead(d.FileFullPath);
-                    }
-                    else
-                    {
-                        int ix = Int32.Parse(d.ColX);
-                        int iy = Int32.Parse(d.ColY);
-                        int ire = Int32.Parse(d.ColRe);
-                        int iim = 0;
-                        try
-                        {
-                            iim = Int32.Parse(d.ColIm);
-                        }
-                        catch
-                        {
-                            iim = 0;
-                        }
-                        plt.FileRead(d.FileFullPath, ix, iy, ire, iim);
-                    }
-                    preview(outputdir, "", 0.0, d, plt, slider1, t_mag, PreviewGrid, image1, t_Nx, t_Ny, t_zmin, t_zmax, lb_zmin, lb_zmax, AnimationStop);
-                    if (plt.error != "")
-                    {
-                        MessageBox.Show(plt.error, "プロット失敗", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                    return;
-                }
-            }
-            else
+            if (d == null || !TryLoadData(d, plt))
             {
                 return;
             }
+
+            preview(outputdir, "", 0.0, d, plt, slider1, t_mag, PreviewGrid, image1, t_Nx, t_Ny, t_zmin, t_zmax, lb_zmin, lb_zmax, AnimationStop);
         }
 
         static private string SetOutputFileName(string outputdir, string filename, string addfilename)
@@ -469,9 +434,14 @@ namespace DataViewer
             return file;
         }
 
-        static public void animationPlot(string outputdir, List<BitmapImage> bmp, int Ndiv, DataView d, plot2d plt, Slider slider1, TextBox t_mag, Grid PreviewGrid, System.Windows.Controls.Image image1, TextBox t_Nx, TextBox t_Ny, TextBox t_zmin, TextBox t_zmax, Label lb_zmin, Label lb_zmax, Action AnimationStop)
+        static public bool animationPlot(string outputdir, List<BitmapImage> bmp, int Ndiv, DataView d, plot2d plt, Slider slider1, TextBox t_mag, Grid PreviewGrid, System.Windows.Controls.Image image1, TextBox t_Nx, TextBox t_Ny, TextBox t_zmin, TextBox t_zmax, Label lb_zmin, Label lb_zmax, Action AnimationStop)
         {
             AnimationStop();
+            if (Ndiv <= 0 || !TryLoadData(d, plt))
+            {
+                return false;
+            }
+
             //ビットマップファイルを表示
             for (int i = 0; i < Ndiv; i++)
             {
@@ -486,14 +456,19 @@ namespace DataViewer
                 }
                 catch (FileNotFoundException)
                 {
-                    return;
+                    return false;
                 }
                 catch (FileFormatException)
                 {
                     MessageBox.Show("画像ファイルの生成に失敗しました", "プロット失敗", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
+                    return false;
                 }
             }
+            if (bmp.Count == 0)
+            {
+                return false;
+            }
+
             var mag = slider1.Value;
             t_mag.Text = ((int)mag).ToString();
             PreviewGrid.Width = (int)Math.Floor(0.5 + (0.01 * mag) * bmp[0].PixelWidth);
@@ -545,17 +520,18 @@ namespace DataViewer
                 t_zmin.Text = plt.minAbs.ToString("0.0#######e+00");
                 t_zmax.Text = plt.maxAbs.ToString("0.0#######e+00");
             }
+            return true;
         }
 
-        static public void plot(DataView d, plot2d plt, Slider slider1, TextBox t_mag, Grid PreviewGrid, System.Windows.Controls.Image image1, TextBox t_Nx, TextBox t_Ny, TextBox t_zmin, TextBox t_zmax, Label lb_zmin, Label lb_zmax, CheckBox cb_colmap, string dirwork, Action AnimationStop)
+        private static bool TryLoadData(DataView d, plot2d plt)
         {
-            AnimationStop();
             if (!File.Exists(d.FileFullPath))
             {
                 MessageBox.Show("ファイル「" + d.FileFullPath + "」は存在しません", "プロット失敗", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
+                return false;
             }
-            else
+
+            try
             {
                 if (d.FileFormat == "Binary")
                 {
@@ -567,35 +543,55 @@ namespace DataViewer
                     int iy = Int32.Parse(d.ColY);
                     int ire = Int32.Parse(d.ColRe);
                     int iim = 0;
-                    try
-                    {
-                        iim = Int32.Parse(d.ColIm);
-                    }
-                    catch
-                    {
-                        iim = 0;
-                    }
+                    Int32.TryParse(d.ColIm, out iim);
                     plt.FileRead(d.FileFullPath, ix, iy, ire, iim);
                 }
+            }
+            catch (FormatException)
+            {
+                MessageBox.Show("列番号の指定が正しくありません", "プロット失敗", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+            catch (OverflowException)
+            {
+                MessageBox.Show("列番号の指定が正しくありません", "プロット失敗", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
 
-                var file1 = preview(dirwork, "", 0.0, d, plt, slider1, t_mag, PreviewGrid, image1, t_Nx, t_zmin, t_zmax, t_Ny, lb_zmin, lb_zmax, AnimationStop);
-                var file2 = SetOutputFileName(d.FileDir, d.FileName, "");
-                if (file1 != "")
-                {
-                    var cbout = (cb_colmap.IsChecked != null && (bool)cb_colmap.IsChecked);
-                    //プロットファイルをコピー
-                    File.Copy(file1, file2);
-                    //再プロット用スクリプト
-                    (bool autoScale, double zmin, double zmax) = scaleSetting(d);
-                    DataView.OutputSource(d, file2, autoScale, zmin, zmax, cbout);
-                    //カラーバー
-                    if (cbout)
-                    {
-                        plt.writeColorBar(DataView.DataTypeIndex(d.PlotType), d.ColorMap, file2.Replace(".bmp", "_colorbar.bmp"), autoScale, zmin, zmax);
-                    }
-                }
+            if (plt.error != "")
+            {
+                MessageBox.Show(plt.error, "プロット失敗", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+
+            return true;
+        }
+
+        static public void plot(DataView d, plot2d plt, Slider slider1, TextBox t_mag, Grid PreviewGrid, System.Windows.Controls.Image image1, TextBox t_Nx, TextBox t_Ny, TextBox t_zmin, TextBox t_zmax, Label lb_zmin, Label lb_zmax, CheckBox cb_colmap, string dirwork, Action AnimationStop)
+        {
+            AnimationStop();
+            if (!TryLoadData(d, plt))
+            {
                 return;
             }
+
+            var file1 = preview(dirwork, "", 0.0, d, plt, slider1, t_mag, PreviewGrid, image1, t_Nx, t_zmin, t_zmax, t_Ny, lb_zmin, lb_zmax, AnimationStop);
+            var file2 = SetOutputFileName(d.FileDir, d.FileName, "");
+            if (file1 != "")
+            {
+                var cbout = (cb_colmap.IsChecked != null && (bool)cb_colmap.IsChecked);
+                //プロットファイルをコピー
+                File.Copy(file1, file2);
+                //再プロット用スクリプト
+                (bool autoScale, double zmin, double zmax) = scaleSetting(d);
+                DataView.OutputSource(d, file2, autoScale, zmin, zmax, cbout);
+                //カラーバー
+                if (cbout)
+                {
+                    plt.writeColorBar(DataView.DataTypeIndex(d.PlotType), d.ColorMap, file2.Replace(".bmp", "_colorbar.bmp"), autoScale, zmin, zmax);
+                }
+            }
+            return;
         }
 
         public static void OutputSource(DataView d, string bmpfilename, bool autoscale, double zmin, double zmax, bool IsOutputColBar)

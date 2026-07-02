@@ -339,8 +339,11 @@ namespace DataViewer
             else
             {
                 animationBMP = new List<BitmapImage>(0);
-                DataView.animationPlot(dirwork, animationBMP, animationNdiv, selected, plt, slider1, t_mag, PreviewGrid, image1, t_Nx, t_Ny, t_zmin, t_zmax, lb_zmin, lb_zmax, AnimationStop);
-                AnimationStart();
+                if (DataView.animationPlot(dirwork, animationBMP, animationNdiv, selected, plt, slider1, t_mag, PreviewGrid, image1, t_Nx, t_Ny, t_zmin, t_zmax, lb_zmin, lb_zmax, AnimationStop))
+                {
+                    animationCounter = 0;
+                    AnimationStart();
+                }
             }
         }
 
