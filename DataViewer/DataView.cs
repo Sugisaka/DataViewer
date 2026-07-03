@@ -557,6 +557,26 @@ namespace DataViewer
                 MessageBox.Show("列番号の指定が正しくありません", "プロット失敗", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
+            catch (IOException)
+            {
+                MessageBox.Show(
+                    "ファイル「" + d.FileFullPath + "」を開けません。\n" +
+                    "ファイルが使用中でないこと、および読み取り可能であることを確認してください。",
+                    "プロット失敗",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                return false;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                MessageBox.Show(
+                    "ファイル「" + d.FileFullPath + "」を開けません。\n" +
+                    "ファイルが使用中でないこと、および読み取り可能であることを確認してください。",
+                    "プロット失敗",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                return false;
+            }
 
             if (plt.error != "")
             {

@@ -258,7 +258,7 @@ namespace MyMath
             this.isCPXdata <- not (izim = 0)
             // 区切り文字の判定
             let sep =
-                let reader:StreamReader = new StreamReader(filename)
+                use reader:StreamReader = new StreamReader(filename)
                 let rec read n =
                     let tmp:string=reader.ReadLine()
                     match tmp with
@@ -284,7 +284,7 @@ namespace MyMath
                 
             // データサイズの決定
             let (_, _, dx, dy, xmin, xmax, ymin, ymax) = 
-                let reader = new StreamReader(filename)
+                use reader = new StreamReader(filename)
                 // 1行読み込んで離散間隔dx,dy、データ範囲xmin,xmax,ymin,ymaxを更新
                 let rec read n x0 y0 dx dy xmin xmax ymin ymax =
                     let tmp=reader.ReadLine()
@@ -356,7 +356,7 @@ namespace MyMath
                     this.error <- (if this.error = "" then "" else this.error+"\r\n") + "配列サイズ("+this.nx.ToString()+","+this.ny.ToString()+")を確保できません"
                 // ここまでエラーなしの場合：データ読み込み
                 if this.error = "" then
-                    let reader = new StreamReader(filename)
+                    use reader = new StreamReader(filename)
                     let rec readD n =
                         match reader.ReadLine() with
                         |null ->
@@ -470,8 +470,8 @@ namespace MyMath
         /// ファイルからデータ読み込み(バイナリデータ)
         /// </summary>
         member public this.FileRead(filename:string) =
-            let fs = new FileStream(filename, FileMode.Open, FileAccess.Read)
-            let rd = new BinaryReader(fs)
+            use fs = new FileStream(filename, FileMode.Open, FileAccess.Read)
+            use rd = new BinaryReader(fs)
             let format = rd.ReadInt32()
             if format = 1 then
                 let ntype = rd.ReadInt32()
@@ -527,7 +527,6 @@ namespace MyMath
                     ()
             else
                 this.error <- (if this.error = "" then "" else this.error+"\r\n") + "unknown file format"
-            rd.Close()
             
         /// <summary>
         /// 24ビットビットマップファイルを作成
